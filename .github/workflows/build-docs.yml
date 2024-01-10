@@ -1,0 +1,27 @@
+name: "Pull Request Docs Check"
+on: 
+- pull_request
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v3
+    - name: Install prerequisites
+      run: | 
+        sudo apt-get --allow-releaseinfo-change update -y && sudo apt-get install -y tox
+    - name: Building RC in HTML
+      run: |
+        cd doc/ref_cert
+        echo "---------------------------------------------------------------------------------------"
+        echo "---------------------------------- RC in HTML -----------------------------------------"
+        echo "---------------------------------------------------------------------------------------"
+        tox -e docs
+        echo "Building RC in HTML was successful! "
+    - name: Store html build result
+      uses: actions/upload-artifact@v3
+      with:
+          name: rc1-html
+          path: |
+              doc/ref_cert/build
